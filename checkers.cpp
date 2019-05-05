@@ -105,9 +105,78 @@ class Board {
     }
     
     //Updates char contents of array following checkValid returning true for given move
-    void move(int x, int y) {
-        string player = board[invert(y)][x];
-        /* TODO */
+    void move(int thisX, int thisY, int nextX, int nextY) {
+        //Identifies the player at turn
+        string player = board[invert(thisY)][thisX];
+        //Clears piece's initial tile
+        board[invert(thisY)][thisX] = space;
+        //Varaible to designate deviation from current position
+        int absX = abs(thisX - nextX);
+        //Updates both tiles for single-unit move
+        if(absX == 1) {
+            board[invert(nextY)][nextX] = player;
+            return;
+        }
+        //Y-coordinates corrected for top-down row access of array
+        int vThisY = invert(thisY);
+        int vNextY = invert(nextY);
+        //Variable to track increment span to move via jump(s)
+        int inc = 2;
+
+        //Four loops currated for 1 of 4 directions; updates symbols long movement's path
+        if(nextX < thisX && nextY < thisY) {
+            while(inc <= absX) {
+                board[vThisY + inc - 1][thisX - inc + 1] = space;
+                if(inc == absX) {
+                    board[vThisY + inc][thisX - inc] = player;
+                    return;
+                }
+                else {
+                    board[vThisY + inc][thisX - inc] = space;
+                }
+                inc += 2;
+            }
+        }
+        else if(nextX > thisX && nextY < thisY) {
+            while(inc <= absX) {
+                board[vThisY + inc - 1][thisX + inc - 1] = space;
+                if(inc == absX) {
+                    board[vThisY + inc][thisX + inc] = player;
+                    return;
+                }
+                else {
+                    board[vThisY + inc][thisX + inc] = space;
+                }
+                inc += 2;
+            }
+        }
+        else if(nextX < thisX && nextY > thisY) {
+            while(inc <= absX) {
+                board[vThisY - inc + 1][thisX - inc + 1] = space;
+                if(inc == absX) {
+                    board[vThisY - inc][thisX - inc] = player;
+                    return;
+                }
+                else {
+                    board[vThisY - inc][thisX - inc] = space;
+                }
+                inc += 2;
+            }
+        }
+        else {
+            while(inc <= absX) {
+                board[vThisY - inc + 1][thisX + inc - 1] = space;
+                if(inc == absX) {
+                    board[vThisY - inc][thisX + inc] = player;
+                    return;
+                }
+                else {
+                    board[vThisY - inc][thisX + inc] = space;
+                }
+                inc += 2;
+            }
+        }
+        return;
     }
     
     //Checks player piece count for 0, indicating end-game state
