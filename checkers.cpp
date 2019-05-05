@@ -52,7 +52,10 @@ class Board {
             return false;
         }
         //Checks if move is valid in direction allotted by piece type
-        if((player == black || player == red) && ((thisX - nextX) < 1)) {
+        if((player == black) && ((vThisY - vNextY) < 1)) {
+            return false;
+        }
+        if((player == red) && ((vThisY - vNextY) > 1)) {
             return false;
         }
         //Permits single-tile movement
