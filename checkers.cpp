@@ -20,6 +20,7 @@ public:
     string redKing = "⬔";
     string space = "⧠";
     string board[8][8];
+    string winner = "";
     
     //Verifies that the piece to move belongs to the player at turn
     bool validPiece(int x, int y, bool p) {
@@ -204,10 +205,39 @@ public:
     }
     
     //Checks player piece count for 0, indicating end-game state
-    bool checkEnd() {/* TODO */}
+    bool checkEnd() {
+        bool b = false;
+        bool r = false;
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 0; j++) {
+                if(board[i][j] == black) {
+                    b = true;
+                }
+                else if(board[i][j] == red) {
+                    r = true;
+                }
+                if(b && r) {
+                    return false;
+                }
+            }
+        }
+        if(!b) {
+            winner = "Red";
+        }
+        else {
+            winner = "Black";
+        }
+        return true;
+    }
+    
+    string getWinner() {
+        return winner;
+    }
     
     //Array traversed to check for tie-game state
-    bool checkTie() {/* TODO */}
+    bool checkTie() {
+        return false;
+    }
     
     void newBoard() {
         for(int i = 0; i < 8; i++) {
@@ -353,6 +383,12 @@ int main(int argc, char**argv)
         nextX = 0;
         nextY = 0;
         input = "";
+    }
+    if(game.checkEnd()) {
+        printf("\n" , game.getWinner().c_str() , "wins!");
+    }
+    else {
+        printf("\n" , "Tie game!");
     }
     
         
