@@ -6,11 +6,13 @@
 
 #include <iostream>
 #include <string>
+#include <stdio.h>
 
 using namespace std;
 
 //Designates current state of the game
 class Board {
+public:
     
     string black = "⬓";
     string red = "⬕";
@@ -18,6 +20,21 @@ class Board {
     string redKing = "⬔";
     string space = "⧠";
     string board[8][8];
+    
+    //Verifies that the piece to move belongs to the player at turn
+    bool validPiece(int x, int y, bool p) {
+        if(p) {
+            if(board[invert(y)][x] != black && (board[invert(y)][x] != blackKing)) {
+                return false;
+            }
+        }
+        else {
+            if((board[invert(y)][x] != red) && (board[invert(y)][x] != redKing)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
     //Verifies that the user-requested move is valid
     bool checkValid(int thisX, int thisY, int nextX, int nextY) {
@@ -106,8 +123,15 @@ class Board {
     
     //Updates char contents of array following checkValid returning true for given move
     void move(int thisX, int thisY, int nextX, int nextY) {
-        //Identifies the player at turn
+        //Identifies the piece type at turn; updates to king if necessary
         string player = board[invert(thisY)][thisX];
+        if((player == black) && (nextY == 7)) {
+            player = blackKing;
+        }
+        else if((player == red) && (nextY == 0)) {
+            player = redKing;
+        }
+
         //Clears piece's initial tile
         board[invert(thisY)][thisX] = space;
         //Varaible to designate deviation from current position
@@ -188,13 +212,43 @@ class Board {
     void newBoard() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 0; j++) {
-                board[i][j] = space;
+                //If i s even
+                if(i % 2 != 1) {
+                    if(j % 2 == 1) {
+                        if(i < 3) {
+                            board[i][j] = red;
+                        }
+                        else if(i > 4) {
+                            board[i][j] = black;
+                        }
+                    }
+                }
+                //If i is odd
+                else {
+                    if(j % 2 != 1) {
+                        if(i < 3) {
+                            board[i][j] = red;
+                        }
+                        else if(i > 4) {
+                            board[i][j] = black;
+                        }
+                    }
+                }
             }
         }
     }
     
     //Prints current state of the game board
-    void updateBoard() {/* TODO */}
+    string updateBoard() {
+        string tiles = "";
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                tiles += board[i][j];
+            }
+            tiles += "\n";
+        }
+        return tiles;
+    }
    
     //Inverts a y-coordinate for use in operations on the array
     int invert(int n) {
@@ -216,6 +270,91 @@ class AI {
 //Handles singleplayer / multiplayer gameplay loops
 int main(int argc, char**argv)
 {
-    /* TODO */
+    Board game;
+    bool multi = false;
+    string input = "";
+    bool turnOne = true;
+    printf("\nCheckers\n"
+           , "=========================\n"
+           , "Enter 1 for 1P or 2 for 2P: ");
+    while(true) {
+        getline (cin, input);
+        if(input == "1") {
+            break;
+        }
+        if(input == "2") {
+            multi = true;
+            break;
+        }
+        printf("\n" , "Invalid input. Enter 1 for 1P or 2 for 2P: ");
+    }
+    if(!multi) {
+        printf("\n" , "Checkers for one: Player 1 - ⬓/⬒  CPU - ⬕/⬔" , "\n");
+    }
+    else {
+        printf("\n" , "Checkers for two: Player 1 - ⬓/⬒  Player 2 - ⬕/⬔" , "\n");
+    }
+    int thisX = 0;
+    int thisY = 0;
+    int nextX = 0;
+    int nextY = 0;
+    input = "";
+    game.newBoard();
+    while(!game.checkEnd() && !game.checkTie()) {
+        printf("\n" , game.updateBoard().c_str());
+        while(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
+            while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+                printf("Enter the column # of piece to move: ");
+                getline (cin, input);
+                printf("\n");
+            }
+            thisX = stoi(input);
+            input = "";
+            while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+                printf("Enter the row # of piece to move: ");
+                getline (cin, input);
+                printf("\n");
+            }
+            thisY = stoi(input);
+            input = "";
+            if(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
+                printf("That tile is not occupied by one of your pieces.");
+            }
+        }
+
+        input = "";
+        while(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
+            while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+                printf("Enter the column # of piece to move: ");
+                getline (cin, input);
+                printf("\n");
+            }
+            nextX = stoi(input);
+            input = "";
+            while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+                printf("Enter the row # of piece to move: ");
+                getline (cin, input);
+                printf("\n");
+            }
+            nextY = stoi(input);
+            if(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
+                printf("That is not a valid move.");
+            }
+        }
+        game.move(thisX - 1, thisY - 1, nextX - 1, nextY - 1);
+        if(turnOne) {
+            turnOne = false;
+        }
+        else {
+            turnOne = true;
+        }
+        thisX = 0;
+        thisY = 0;
+        nextX = 0;
+        nextY = 0;
+        input = "";
+    }
+    
+        
     return 0;
 }
