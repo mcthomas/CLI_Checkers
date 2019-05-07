@@ -294,7 +294,27 @@ public:
 
 //Simple AI; randomly executes valid moves in turn
 class AI {
-    /* TODO */
+    //Still skeleton code	
+	int randThisX = -1;
+	int randThisY = -1;
+	int randNextX = -1;
+	int randNextY = -1;
+	    while(!validPiece(randThisX, randThisY, p) && !checkValid(randThisX, randThisY, randNextX, randNextY)) {
+	        randThisX = rand() % 8 + 1;
+	        randThisY = rand() % 8 + 1;
+	        randNextX = randThisX + 1;
+	        randNextY = randThisY + 1;
+	            if(validPiece(randThisX, randThisY, p)) {
+	                if(checkValid(randThisX, randThisY, randNextX, randNextY)){
+	                    move(randThisX, randThisY, randNextX, randNextY);
+	                } else {
+	                    randNextX = randThisX - 1;
+	                    randNextY = randThisY - 1;
+	                        if(checkValid(randThisX, randThisY, randNextX, randNextY)){
+	                            move(randThisX, randThisY, randNextX, randNextY);
+	                        }
+	                }
+	        }
 };
 
 //Handles singleplayer / multiplayer gameplay loops
