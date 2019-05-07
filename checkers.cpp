@@ -22,6 +22,7 @@ public:
     string space = "⧠";
     string board[8][8];
     string winner = "";
+    int noActionTurns = 0;
     
     //Verifies that the piece to move belongs to the player at turn
     bool validPiece(int x, int y, bool playerOne) {
