@@ -209,7 +209,7 @@ public:
         bool b = false;
         bool r = false;
         for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 0; j++) {
+            for(int j = 0; j < 8; j++) {
                 if(board[i][j] == black) {
                     b = true;
                 }
@@ -241,8 +241,11 @@ public:
     
     void newBoard() {
         for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 0; j++) {
+            for(int j = 0; j < 8; j++) {
                 //If i s even
+                if(i == 3 || i == 4) {
+                    board[i][j] = space;
+                }
                 if(i % 2 != 1) {
                     if(j % 2 == 1) {
                         if(i < 3) {
@@ -251,6 +254,9 @@ public:
                         else if(i > 4) {
                             board[i][j] = black;
                         }
+                    }
+                    else {
+                        board[i][j] = space;
                     }
                 }
                 //If i is odd
@@ -263,6 +269,9 @@ public:
                             board[i][j] = black;
                         }
                     }
+                    else {
+                        board[i][j] = space;
+                    }
                 }
             }
         }
@@ -274,10 +283,11 @@ public:
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 tiles += board[i][j];
+                tiles += " ";
             }
             tiles += "\n";
         }
-        return tiles;
+        return "\n" + tiles + "\n";
     }
    
     //Inverts a y-coordinate for use in operations on the array
@@ -302,27 +312,28 @@ int main(int argc, char**argv)
 {
     Board game;
     bool multi = false;
+    bool select = false;
     string input = "";
     bool turnOne = true;
-    printf("\nCheckers\n"
-           , "=========================\n"
-           , "Enter 1 for 1P or 2 for 2P: ");
-    while(true) {
-        getline (cin, input);
+    printf("\nCheckers\n=========================\nEnter 1 for 1P or 2 for 2P: ");
+    while(!select) {
+        cin >> input;
         if(input == "1") {
-            break;
+            select = true;
         }
-        if(input == "2") {
+        else if(input == "2") {
             multi = true;
-            break;
+            select = true;
         }
-        printf("\n" , "Invalid input. Enter 1 for 1P or 2 for 2P: ");
+        if(!select) {
+            printf("\nInvalid input. Enter 1 for 1P or 2 for 2P: ");
+        }
     }
     if(!multi) {
-        printf("\n" , "Checkers for one: Player 1 - ⬓/⬒  CPU - ⬕/⬔" , "\n");
+        printf("\nCheckers for one: Player 1 - ⬓/⬒  CPU - ⬕/⬔\n");
     }
     else {
-        printf("\n" , "Checkers for two: Player 1 - ⬓/⬒  Player 2 - ⬕/⬔" , "\n");
+        printf("\nCheckers for two: Player 1 - ⬓/⬒  Player 2 - ⬕/⬔\n");
     }
     int thisX = 0;
     int thisY = 0;
@@ -331,44 +342,44 @@ int main(int argc, char**argv)
     input = "";
     game.newBoard();
     while(!game.checkEnd() && !game.checkTie()) {
-        printf("\n" , game.updateBoard().c_str());
+        cout << game.updateBoard();
         while(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
                 printf("Enter the column # of piece to move: ");
-                getline (cin, input);
+                cin >> input;
                 printf("\n");
             }
             thisX = stoi(input);
             input = "";
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
                 printf("Enter the row # of piece to move: ");
-                getline (cin, input);
+                cin >> input;
                 printf("\n");
             }
             thisY = stoi(input);
             input = "";
             if(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
-                printf("That tile is not occupied by one of your pieces.");
+                printf("That tile is not occupied by one of your pieces. ");
             }
         }
 
         input = "";
         while(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the column # of piece to move: ");
-                getline (cin, input);
+                printf("Enter the column # of space to move to: ");
+                cin >> input;
                 printf("\n");
             }
             nextX = stoi(input);
             input = "";
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the row # of piece to move: ");
-                getline (cin, input);
+                printf("Enter the row # of space to move to: ");
+                cin >> input;
                 printf("\n");
             }
             nextY = stoi(input);
             if(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
-                printf("That is not a valid move.");
+                printf("That is not a valid move. ");
             }
         }
         game.move(thisX - 1, thisY - 1, nextX - 1, nextY - 1);
@@ -388,7 +399,7 @@ int main(int argc, char**argv)
         printf("\n" , game.getWinner().c_str() , "wins!");
     }
     else {
-        printf("\n" , "Tie game!");
+        printf("\nTie game!");
     }
     
         
