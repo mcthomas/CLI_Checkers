@@ -1,4 +1,4 @@
-/* ******************************************************
+﻿/* ******************************************************
  * CS368 FINAL PROJECT: CLI_Checkers
  * Main File: checkers.cpp
  * Names: Matt Thomas, Aleks Lesiewicz, and Parker Breene
@@ -129,9 +129,11 @@ public:
         string player = board[invert(thisY)][thisX];
         if((player == black) && (nextY == 7)) {
             player = blackKing;
+	    noActionTurns = 0;
         }
         else if((player == red) && (nextY == 0)) {
             player = redKing;
+	    noActionTurns = 0;
         }
 
         //Clears piece's initial tile
@@ -141,8 +143,10 @@ public:
         //Updates both tiles for single-unit move
         if(absX == 1) {
             board[invert(nextY)][nextX] = player;
+	    noActionTurns++;
             return;
         }
+	noActionTurns = 0;
         //Y-coordinates corrected for top-down row access of array
         int vThisY = invert(thisY);
         int vNextY = invert(nextY);
