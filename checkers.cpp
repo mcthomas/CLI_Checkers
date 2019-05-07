@@ -1,4 +1,4 @@
-﻿/* ******************************************************
+/* ******************************************************
  * CS368 FINAL PROJECT: CLI_Checkers
  * Main File: checkers.cpp
  * Names: Matt Thomas, Aleks Lesiewicz, and Parker Breene
@@ -72,10 +72,10 @@ public:
             return false;
         }
         //Checks if move is valid in direction allotted by piece type
-        if((player == black) && ((vThisY - vNextY) < 1)) {
+        if((player == black) && (vThisY < vNextY)) {
             return false;
         }
-        if((player == red) && ((vThisY - vNextY) > 1)) {
+        if((player == red) && (vThisY > vNextY)) {
             return false;
         }
         //Permits single-tile movement
@@ -91,7 +91,7 @@ public:
         //Four loops currated for 1 of 4 directions; checks if jump space(s) are open / there exist opponent's piece(s) to be jumped
         if(nextX < thisX && nextY < thisY) {
             while(inc <= absX) {
-                if((((board[vThisY + inc - 1][thisX - inc + 1]) != other) || ((board[vThisY + inc - 1][thisX - inc + 1]) != otherK)) || (board[vThisY + inc][thisX - inc] != space)) {
+                if((!((board[vNextY + inc - 1][nextX - inc + 1]) == other) && !((board[vNextY + inc - 1][nextX - inc + 1]) == otherK)) && (board[vNextY + inc][nextX - inc] == space)) {
                     return false;
                 }
                 inc += 2;
@@ -99,7 +99,7 @@ public:
         }
         else if(nextX > thisX && nextY < thisY) {
             while(inc <= absX) {
-                if((((board[vThisY + inc - 1][thisX + inc - 1]) != other) || ((board[vThisY + inc - 1][thisX + inc - 1]) != otherK)) || (board[vThisY + inc][thisX + inc] != space)) {
+                if((!((board[vNextY + inc - 1][nextX + inc - 1]) == other) && !((board[vNextY + inc - 1][nextX + inc - 1]) == otherK)) && (board[vNextY + inc][nextX + inc] == space)) {
                     return false;
                 }
                 inc += 2;
@@ -107,7 +107,7 @@ public:
         }
         else if(nextX < thisX && nextY > thisY) {
             while(inc <= absX) {
-                if((((board[vThisY - inc + 1][thisX - inc + 1]) != other) || ((board[vThisY - inc + 1][thisX - inc + 1]) != otherK)) || (board[vThisY - inc][thisX - inc] != space)) {
+                if((!((board[vNextY - inc + 1][nextX - inc + 1]) == other) && !((board[vNextY - inc + 1][nextX - inc + 1]) == otherK)) && (board[vNextY - inc][nextX - inc] == space)) {
                     return false;
                 }
                 inc += 2;
@@ -115,7 +115,7 @@ public:
         }
         else {
             while(inc <= absX) {
-                if((((board[vThisY - inc + 1][thisX + inc - 1]) != other) || ((board[vThisY - inc + 1][thisX + inc - 1]) != otherK)) || (board[vThisY - inc][thisX + inc] != space)) {
+                if((!((board[vNextY - inc + 1][nextX + inc - 1]) == other) && !((board[vNextY - inc + 1][nextX + inc - 1]) == otherK)) && (board[vNextY - inc][nextX + inc] == space)) {
                     return false;
                 }
                 inc += 2;
@@ -298,18 +298,13 @@ public:
    
     //Inverts a y-coordinate for use in operations on the array
     int invert(int n) {
-        if(n < 4) {
-            return (7 - n);
-        }
-        if(n > 3) {
-            return (0 + (7-n));
-        }
+        return (7-n);
     }
     
 };
 
 //Simple AI; randomly executes valid moves in turn
-class AI {
+/* class AI {
     //Still skeleton code
 	
     void playTurn() {
@@ -335,7 +330,7 @@ class AI {
 	      	  }
 	    }
     }
-};
+};*/
 
 //Handles singleplayer / multiplayer gameplay loops
 int main(int argc, char**argv)
