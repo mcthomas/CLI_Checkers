@@ -210,7 +210,7 @@ public:
         return;
     }
     
-    //Checks player piece count for 0, indicating end-game state
+    //Checks both players' piece count for 0, indicating end-game state
     bool checkEnd() {
         bool b = false;
         bool r = false;
@@ -236,6 +236,7 @@ public:
         return true;
     }
     
+    //Access method for winner global
     string getWinner() {
         return winner;
     }
@@ -312,6 +313,8 @@ public:
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 for(int k = 0; k < 8; k++) {
+                    if(validPiece(i, j, false)) {
+                    //Check for the first valid 1 or 2 space move for the first red or red king piece
                     if(k == 0) {
                         if(checkValid(i, j, i+1, j+1)) {
                             move(i, j, i+1, j+1);
@@ -360,6 +363,7 @@ public:
                             return;
                         }
                     }
+                    }
                 }
             }
         }
@@ -401,6 +405,8 @@ int main(int argc, char**argv)
     int nextY = 0;
     input = "";
     game.newBoard();
+    if(multi) {
+    //OVerarching game loop for 2 players
     while(!game.checkEnd() && !game.checkTie()) {
         cout << game.updateBoard();
         while(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
@@ -476,6 +482,85 @@ int main(int argc, char**argv)
         nextY = 0;
         input = "";
     }
+    }
+    
+    //Overarching game loop for a single player against the AI
+    else {
+        
+        while(!game.checkEnd() && !game.checkTie()) {
+            cout << game.updateBoard();
+            if(!playerOne) {
+                printf("AI:\n");
+                game.AI();
+                playerOne = true;
+                continue;
+            }
+            while(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
+                while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+
+                        printf("P1: Enter the column # of piece to move: ");
+                    
+                    
+                    cin >> input;
+                    printf("\n");
+                }
+                thisX = stoi(input);
+                input = "";
+                while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+
+
+                    printf("P1: Enter the row # of piece to move: ");
+
+                    cin >> input;
+                    printf("\n");
+                }
+                thisY = stoi(input);
+                input = "";
+                if(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
+                    printf("That tile is not occupied by one of your pieces. ");
+                }
+            }
+            
+            input = "";
+            while(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
+                while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+ 
+
+                    printf("P1: Enter the column # of space to move to: ");
+                    
+                    cin >> input;
+                    printf("\n");
+                }
+                nextX = stoi(input);
+                input = "";
+                while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
+
+                    printf("P1: Enter the row # of space to move to: ");
+                    
+                    cin >> input;
+                    printf("\n");
+                }
+                nextY = stoi(input);
+                if(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
+                    printf("That is not a valid move. ");
+                }
+            }
+            game.move(thisX - 1, thisY - 1, nextX - 1, nextY - 1);
+            if(playerOne) {
+                playerOne = false;
+            }
+            else {
+                playerOne = true;
+            }
+            thisX = 0;
+            thisY = 0;
+            nextX = 0;
+            nextY = 0;
+            input = "";
+        }
+        
+    }
+    //Final conditionals to determine end game state / winner
     if(game.checkEnd()) {
         printf("\n" , game.getWinner().c_str() , "wins!");
     }
