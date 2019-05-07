@@ -242,9 +242,15 @@ public:
     
     //Array traversed to check for tie-game state
     bool checkTie() {
-        return false;
+        if(noActionTurns == 40) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
+    //Populates the 2D array with the starting piece state configuration
     void newBoard() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -301,36 +307,65 @@ public:
         return (7-n);
     }
     
-};
-
-//Simple AI; randomly executes valid moves in turn
-/* class AI {
-    //Still skeleton code
-	
-    void playTurn() {
-	int randThisX = -1;
-	int randThisY = -1;
-	int randNextX = -1;
-	int randNextY = -1;
-	    while(!validPiece(randThisX, randThisY, p) && !checkValid(randThisX, randThisY, randNextX, randNextY)) {
-	        randThisX = rand() % 8 + 1;
-	        randThisY = rand() % 8 + 1;
-	        randNextX = randThisX + 1;
-	        randNextY = randThisY + 1;
-	            if(validPiece(randThisX, randThisY, p)) {
-	                if(checkValid(randThisX, randThisY, randNextX, randNextY)){
-	                    move(randThisX, randThisY, randNextX, randNextY);
-	                } else {
-	                    randNextX = randThisX - 1;
-	                    randNextY = randThisY - 1;
-	                        if(checkValid(randThisX, randThisY, randNextX, randNextY)){
-	                            move(randThisX, randThisY, randNextX, randNextY);
-	                        }
-	                }
-	      	  }
-	    }
+    //AI acting as red player; sequential executes first valid move found
+    void AI() {
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+                for(int k = 0; k < 8; k++) {
+                    if(k == 0) {
+                        if(checkValid(i, j, i+1, j+1)) {
+                            move(i, j, i+1, j+1);
+                            return;
+                        }
+                    }
+                    if(k == 1) {
+                        if(checkValid(i, j, i+2, j+2)) {
+                            move(i, j, i+2, j+2);
+                            return;
+                        }
+                    }
+                    if(k == 2) {
+                        if(checkValid(i, j, i-1, j+1)) {
+                            move(i, j, i-1, j+1);
+                            return;
+                        }
+                    }
+                    if(k == 3) {
+                        if(checkValid(i, j, i-2, j+2)) {
+                            move(i, j, i-2, j+2);
+                            return;
+                        }
+                    }
+                    if(k == 4) {
+                        if(checkValid(i, j, i+1, j-1)) {
+                            move(i, j, i+1, j-1);
+                            return;
+                        }
+                    }
+                    if(k == 5) {
+                        if(checkValid(i, j, i+2, j-2)) {
+                            move(i, j, i+2, j-2);
+                            return;
+                        }
+                    }
+                    if(k == 6) {
+                        if(checkValid(i, j, i-1, j-1)) {
+                            move(i, j, i-1, j-1);
+                            return;
+                        }
+                    }
+                    if(k == 7) {
+                        if(checkValid(i, j, i-2, j-2)) {
+                            move(i, j, i-2, j-2);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
-};*/
+    
+};
 
 //Handles singleplayer / multiplayer gameplay loops
 int main(int argc, char**argv)
@@ -339,7 +374,7 @@ int main(int argc, char**argv)
     bool multi = false;
     bool select = false;
     string input = "";
-    bool turnOne = true;
+    bool playerOne = true;
     printf("\nCheckers\n=========================\nEnter 1 for 1P or 2 for 2P: ");
     while(!select) {
         cin >> input;
@@ -368,22 +403,33 @@ int main(int argc, char**argv)
     game.newBoard();
     while(!game.checkEnd() && !game.checkTie()) {
         cout << game.updateBoard();
-        while(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
+        while(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the column # of piece to move: ");
+                if(multi && !playerOne) {
+                    printf("P2: Enter the column # of piece to move: ");
+                }
+                else {
+                    printf("P1: Enter the column # of piece to move: ");
+                }
+                
                 cin >> input;
                 printf("\n");
             }
             thisX = stoi(input);
             input = "";
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the row # of piece to move: ");
+                if(multi && !playerOne) {
+                    printf("P2: Enter the row # of piece to move: ");
+                }
+                else {
+                    printf("P1: Enter the row # of piece to move: ");
+                }
                 cin >> input;
                 printf("\n");
             }
             thisY = stoi(input);
             input = "";
-            if(!game.validPiece(thisX - 1, thisY - 1, turnOne)) {
+            if(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
                 printf("That tile is not occupied by one of your pieces. ");
             }
         }
@@ -391,14 +437,24 @@ int main(int argc, char**argv)
         input = "";
         while(!game.checkValid(thisX - 1, thisY - 1, nextX - 1, nextY - 1)) {
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the column # of space to move to: ");
+                if(multi && !playerOne) {
+                    printf("P2: Enter the column # of space to move to: ");
+                }
+                else {
+                    printf("P1: Enter the column # of space to move to: ");
+                }
                 cin >> input;
                 printf("\n");
             }
             nextX = stoi(input);
             input = "";
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
-                printf("Enter the row # of space to move to: ");
+                if(multi && !playerOne) {
+                    printf("P2: Enter the row # of space to move to: ");
+                }
+                else {
+                    printf("P1: Enter the row # of space to move to: ");
+                }
                 cin >> input;
                 printf("\n");
             }
@@ -408,11 +464,11 @@ int main(int argc, char**argv)
             }
         }
         game.move(thisX - 1, thisY - 1, nextX - 1, nextY - 1);
-        if(turnOne) {
-            turnOne = false;
+        if(playerOne) {
+            playerOne = false;
         }
         else {
-            turnOne = true;
+            playerOne = true;
         }
         thisX = 0;
         thisY = 0;
