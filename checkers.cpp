@@ -314,7 +314,8 @@ class AI {
 	                            move(randThisX, randThisY, randNextX, randNextY);
 	                        }
 	                }
-	        }
+	      	  }
+	    }
 };
 
 //Handles singleplayer / multiplayer gameplay loops
