@@ -295,7 +295,9 @@ public:
 
 //Simple AI; randomly executes valid moves in turn
 class AI {
-    //Still skeleton code	
+    //Still skeleton code
+	
+    void playTurn() {
 	int randThisX = -1;
 	int randThisY = -1;
 	int randNextX = -1;
@@ -317,6 +319,7 @@ class AI {
 	                }
 	      	  }
 	    }
+    }
 };
 
 //Handles singleplayer / multiplayer gameplay loops
