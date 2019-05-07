@@ -23,8 +23,8 @@ public:
     string winner = "";
     
     //Verifies that the piece to move belongs to the player at turn
-    bool validPiece(int x, int y, bool p) {
-        if(p) {
+    bool validPiece(int x, int y, bool playerOne) {
+        if(playerOne) {
             if(board[invert(y)][x] != black && (board[invert(y)][x] != blackKing)) {
                 return false;
             }
