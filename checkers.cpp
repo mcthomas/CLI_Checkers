@@ -3,7 +3,7 @@
  * Main File: checkers.cpp
  * Names: Matt Thomas, Aleks Lesiewicz, and Parker Breene
  *******************************************************/
-//test
+
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -15,10 +15,10 @@ using namespace std;
 class Board {
 public:
     
-    string black = "⬓";
-    string red = "⬕";
-    string blackKing = "⬒";
-    string redKing = "⬔";
+    string black = "\033[34;m⬓\033[0m";
+    string red = "\033[31;m⬕\033[0m";
+    string blackKing = "\033[34;m⬒\033[0m";
+    string redKing = "\033[31;m⬔\033[0m";
     string space = "⧠";
     string board[8][8];
     string winner = "";
@@ -38,7 +38,7 @@ public:
         }
         return true;
     }
-    
+
     //Verifies that the user-requested move is valid
     bool checkValid(int thisX, int thisY, int nextX, int nextY) {
         //Y-coordinates corrected for top-down row access of array
@@ -294,14 +294,20 @@ public:
     string updateBoard() {
         string tiles = "";
         for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
-                tiles += board[i][j];
-                tiles += " ";
+            if(i == 0) {
+                tiles += "  1 2 3 4 5 6 7 8";
+                tiles += "\n";
             }
-            tiles += "\n";
-        }
-        return "\n" + tiles + "\n";
-    }
+            tiles += to_string(8-i);
+            tiles += " ";
+            	for(int j = 0; j < 8; j++) {
+                    tiles += board[i][j];
+                    tiles += " ";
+            	}
+            	tiles += "\n";
+        	}
+        	return "\n" + tiles + "\n";
+    	}
    
     //Inverts a y-coordinate for use in operations on the array
     int invert(int n) {
@@ -394,7 +400,7 @@ int main(int argc, char**argv)
         }
     }
     if(!multi) {
-        printf("\nCheckers for one: Player 1 - ⬓/⬒  CPU - ⬕/⬔\n");
+        printf("\nCheckers for one: Player 1 - \033[34;m⬓\033[0m/\033[34;m⬒\033[0m  CPU - \033[31;m⬕\033[0m/\033[31;m⬔\033[0m\n");
     }
     else {
         printf("\nCheckers for two: Player 1 - ⬓/⬒  Player 2 - ⬕/⬔\n");
