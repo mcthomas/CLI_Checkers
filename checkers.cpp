@@ -412,7 +412,7 @@ int main(int argc, char**argv)
     input = "";
     game.newBoard();
     if(multi) {
-    //OVerarching game loop for 2 players
+    //Overarching game loop for 2 players
     while(!game.checkEnd() && !game.checkTie()) {
         cout << game.updateBoard();
         while(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
