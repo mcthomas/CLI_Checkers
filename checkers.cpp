@@ -414,6 +414,7 @@ int main(int argc, char**argv)
     if(multi) {
     //Overarching game loop for 2 players
     while(!game.checkEnd() && !game.checkTie()) {
+        cout << "\033[2J\033[1;1H";
         cout << game.updateBoard();
         while(!game.validPiece(thisX - 1, thisY - 1, playerOne)) {
             while((input != "1") && (input != "2") && (input != "3") && (input != "4") && (input != "5") && (input != "6") && (input != "7") && (input != "8")) {
@@ -494,6 +495,7 @@ int main(int argc, char**argv)
     else {
         
         while(!game.checkEnd() && !game.checkTie()) {
+            cout << "\033[2J\033[1;1H";
             cout << game.updateBoard();
             if(!playerOne) {
                 printf("AI:\n");
@@ -568,7 +570,7 @@ int main(int argc, char**argv)
     }
     //Final conditionals to determine end game state / winner
     if(game.checkEnd()) {
-        printf("\n" , game.getWinner().c_str() , "wins!");
+        printf("\n" , game.getWinner().c_str(), "wins!");
     }
     else {
         printf("\nTie game!");
